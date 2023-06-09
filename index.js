@@ -189,7 +189,8 @@ exports.startMigration = async function startMigration(options) {
   }
 
   options = options || {};
-  const defaultName = require.main.filename ? require.main.filename.slice(require.main.filename.lastIndexOf('/') + 1) : 'Unknown';
+  const filename = options.filename ? options.filename : require.main.filename;
+  const defaultName = filename ? filename.slice(filename.lastIndexOf('/') + 1) : 'Unknown';
   const name = options.name || defaultName;
   if (options.restart) {
     return exports.restartMigration({ ...options, name });
@@ -202,13 +203,14 @@ exports.startMigration = async function startMigration(options) {
       await Operation.deleteMany({ migrationId: existingMigration._id });
     } else {
       console.log(`Migration "${name}" already ran`);
-      return process.exit(0);
+      throw new AlreadyRanError();
+
     }
   }
 
   const sourceCode = await new Promise(resolve => {
     try {
-      fs.readFile(require.main.filename, (err, data) => {
+      fs.readFile(filename, (err, data) => {
         if (err != null) {
           return resolve(null);
         }
@@ -233,11 +235,11 @@ exports.startMigration = async function startMigration(options) {
   });
 
   const author = await new Promise(resolve => {
-    if (!require.main.filename) {
+    if (!filename) {
       return resolve(null);
     }
     try {
-      exec(`git blame -p ${require.main.filename}`, (err, data) => {
+      exec(`git blame -p ${filename}`, (err, data) => {
         if (err != null) {
           return resolve(null);
         }
