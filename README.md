@@ -1,3 +1,17 @@
+# mongoose migration
+
+This is fork of [@mongoosejs/migrations](https://github.com/mongoosejs/migrations)
+
+Changes from original:
+
+- throw AlreadyRanError rather than process exit; use options.filename. [changes](https://github.com/BetweenTwoTests/migrations/commit/cab3c8efe48a54ea22558d4f8434efeb22d84a06)
+- require mongoose version 7 or 8 (v0.0.2)
+- log message only for new migrations (v0.0.2)
+
+------
+
+Below is the README from the original
+
 # migrations
 Mongoose Migration Framework
 

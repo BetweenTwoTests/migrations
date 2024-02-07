@@ -202,9 +202,8 @@ exports.startMigration = async function startMigration(options) {
       await Migration.deleteOne({ _id: existingMigration._id });
       await Operation.deleteMany({ migrationId: existingMigration._id });
     } else {
-      console.log(`Migration "${name}" already ran`);
+      // console.log(`Migration "${name}" already ran`);
       throw new AlreadyRanError();
-
     }
   }
 
@@ -254,6 +253,7 @@ exports.startMigration = async function startMigration(options) {
     }
   });
 
+  console.log(`Running new migration "${name}"`);
   migration = await Migration.create({
     name,
     sourceCode,
